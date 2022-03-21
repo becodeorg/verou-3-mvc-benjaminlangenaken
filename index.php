@@ -6,11 +6,19 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
+// Create new session
+session_start();
+
 //include all your model files here
-require 'Model/Article.php';
+require_once 'Model/config.php';
+require_once 'Model/DatabaseManager.php';
+require_once 'Model/Article.php';
 //include all your controllers here
-require 'Controller/HomepageController.php';
-require 'Controller/ArticleController.php';
+require_once 'Controller/HomepageController.php';
+require_once 'Controller/ArticleController.php';
+
+$databaseManager = new DatabaseManager($config['host'], $config['user'], $config['password'], $config['dbname']);
+$databaseManager->connect();
 
 // Get the current page to load
 // If nothing is specified, it will remain empty (home should be loaded)
