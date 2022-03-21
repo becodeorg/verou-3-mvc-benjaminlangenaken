@@ -22,7 +22,6 @@ class DatabaseManager
 			$dsn = "mysql:host={$this->host}; dbname={$this->dbname}";
 			$this->connection = new PDO($dsn, $this->user, $this->password);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			echo "Database connection succeeded";
 		} catch(PDOException $e) {
 			echo "Connection failed: ".$e->getMessage().'<br>';
 			echo "Error code: ".$e->getCode().'<br>';
