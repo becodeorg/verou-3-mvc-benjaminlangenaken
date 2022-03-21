@@ -34,8 +34,7 @@ switch ($page) {
 		(new ArticleController($databaseManager))->index();
 		break;
 	case 'articles-show':
-		// TODO: detail page
-		require 'view/articles/show.php';
+		// Add detail page
 		(new ArticleController($databaseManager))->show();
 		break;
 	case 'home':
