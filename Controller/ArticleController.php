@@ -39,23 +39,32 @@ class ArticleController
 		return $articles;
 	}
 
-	public function show(): array
+	public function show()
 	{
-		$articles = $this->getArticles();
-		// This can be used for a detail page
+		$articles = $this->getArticle();
 		require 'View/articles/show.php';
-		// Fetch one article as $rawArticle (as a simple array)
-		$sqlQuery = 'SELECT * FROM articles';
+	}
+
+	private function getArticle(): array
+	{
+		$id = $_GET['id'] ?? null;
+
+		if (!$id) {
+			header('Location: index.php');
+			exit;
+		}
+
+		// Fetch all articles as $rawArticles (as a simple array)
+		$sqlQuery = 'SELECT * FROM articles WHERE id = :id';
 		$statement = $this->databaseManager->connection->prepare($sqlQuery);
+		$statement->bindValue(':id', $id);
 		$statement->execute();
-		$rawArticles = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$rawArticle = $statement->fetch(PDO::FETCH_ASSOC);
 
-		$articles = [];
-		foreach ($rawArticles as $rawArticle) {
-			// We are converting an article from a "dumb" array to a much more flexible class
-			$articles[] = new Article($rawArticle['id'], $rawArticle['title'], $rawArticle['description'],
-				$rawArticle['publish_date']);}
+		$article = [];
+		$article[] = new Article($rawArticle['id'], $rawArticle['title'], $rawArticle['description'],
+			$rawArticle['publish_date']);
 
-		return $articles;
+		return $article;
 	}
 }
