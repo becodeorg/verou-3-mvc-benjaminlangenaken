@@ -45,7 +45,7 @@ class ArticleController
 		require 'View/articles/show.php';
 	}
 
-	private function getArticle(): array
+	private function getArticle()
 	{
 		$id = $_GET['id'] ?? null;
 
@@ -61,10 +61,49 @@ class ArticleController
 		$statement->execute();
 		$rawArticle = $statement->fetch(PDO::FETCH_ASSOC);
 
-		$article = [];
-		$article[] = new Article($rawArticle['id'], $rawArticle['title'], $rawArticle['description'],
+		return new Article($rawArticle['id'], $rawArticle['title'], $rawArticle['description'],
 			$rawArticle['publish_date']);
+	}
 
-		return $article;
+	public function firstId()
+	{
+		$sqlQuery = 'SELECT MIN(id) FROM articles';
+		$statement = $this->databaseManager->connection->prepare($sqlQuery);
+		$statement->execute();
+		$firstId = $statement->fetch(PDO::FETCH_ASSOC);
+
+		return $firstId["MIN(id)"];
+	}
+
+	public function lastId()
+	{
+		$sqlQuery = 'SELECT MAX(id) FROM articles';
+		$statement = $this->databaseManager->connection->prepare($sqlQuery);
+		$statement->execute();
+		$lastId = $statement->fetch(PDO::FETCH_ASSOC);
+
+		return $lastId["MAX(id)"];
+	}
+
+	public function previousId($id)
+	{
+		$sqlQuery = 'SELECT id FROM articles WHERE id < :id LIMIT 1';
+		$statement = $this->databaseManager->connection->prepare($sqlQuery);
+		$statement->bindValue(':id', $id);
+		$statement->execute();
+		$previousId = $statement->fetch(PDO::FETCH_ASSOC);
+
+		return $previousId;
+	}
+
+	public function nextId($id)
+	{
+		$sqlQuery = 'SELECT id FROM articles WHERE id > :id LIMIT 1';
+		$statement = $this->databaseManager->connection->prepare($sqlQuery);
+		$statement->bindValue(':id', $id);
+		$statement->execute();
+		$nextId = $statement->fetch(PDO::FETCH_ASSOC);
+
+		return $nextId;
 	}
 }
