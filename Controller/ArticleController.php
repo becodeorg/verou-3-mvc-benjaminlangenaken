@@ -87,7 +87,7 @@ class ArticleController
 
 	public function previousId($id)
 	{
-		$sqlQuery = 'SELECT id FROM articles WHERE id < :id LIMIT 1';
+		$sqlQuery = 'SELECT id FROM articles WHERE id < :id ORDER BY id DESC LIMIT 1';
 		$statement = $this->databaseManager->connection->prepare($sqlQuery);
 		$statement->bindValue(':id', $id);
 		$statement->execute();
